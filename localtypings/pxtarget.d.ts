@@ -36,7 +36,7 @@ declare namespace pxt {
         appTheme: AppTheme;
         compileService?: TargetCompileService;
         analytics?: AppAnalytics;
-        juniorAppTheme?: AppTheme;
+        views?: pxt.Map<AppTheme>;
     }
 
     interface ProjectTemplate {

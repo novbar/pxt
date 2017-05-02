@@ -1975,11 +1975,19 @@ function initTheme() {
             if (boardDef.outlineImage) boardDef.outlineImage = patchCdn(boardDef.outlineImage)
         }
     }
-    if (pxt.shell.isJunior()) {
-        pxt.debug(`merging junior theme`);
-        Util.jsonMergeFrom(theme, pxt.appTarget.juniorAppTheme);
 
-        if(pxt.appTarget.juniorprj)
+    if (pxt.appTarget.views) {
+        Object.keys(pxt.appTarget.views).forEach((key) => {
+            if (pxt.shell.inView(key)) {
+                pxt.debug(`launching ${key} view`);
+                pxt.tickEvent(`app.view.${key}`)
+                Util.jsonMergeFrom(theme, pxt.appTarget.views[key]);
+            }
+        })
+    }
+
+    if (pxt.shell.isJunior()) {
+        if (pxt.appTarget.juniorprj)
             pxt.appTarget.blocksprj = pxt.appTarget.juniorprj;
     }
 }

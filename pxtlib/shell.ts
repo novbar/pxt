@@ -48,6 +48,10 @@ namespace pxt.shell {
     }
 
     export function isJunior() {
-        return pxt.appTarget.juniorAppTheme && /[?&]junior=1/i.test(window.location.href);
+        return pxt.appTarget.views && pxt.appTarget.views['junior'] && inView('junior');
+    }
+
+    export function inView(key: string) {
+        return (new RegExp(`[?&]${key}=1`, "i")).test(window.location.href);
     }
 }
