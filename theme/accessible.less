@@ -1,0 +1,42 @@
+/* Import all components */
+@import 'themes/default/globals/site.variables';
+@import 'themes/pxt/globals/site.variables';
+
+/* Reference import */
+@import (reference) "semantic.less";
+
+#nav-access, #nav-access a {
+    position: absolute;
+}
+
+#nav-access {
+    width: 100%;
+    top: -20em;
+    z-index: 10001;
+}
+
+#nav-access a {
+    background: #fff;
+    background: rgba(255,255,255,.9);
+    padding: 12px 10px;
+    left: 0;
+    right: 0;
+    font-weight: 700;
+    text-align: center;
+}
+
+#nav-access a:focus, #nav-access a:hover {
+    box-shadow: 3px 3px 5px #aaa;
+    top: 20em;
+    text-decoration: none;
+}
+
+
+/* Accessibility: Inverted menu focus */
+.ui.link.inverted.menu .item:focus,
+.ui.inverted.menu .dropdown.item:focus,
+.ui.inverted.menu .link.item:focus,
+.ui.inverted.menu a.item:focus {
+  background: @invertedHoverBackground;
+  color: @invertedHoverColor;
+}

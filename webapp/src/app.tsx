@@ -397,6 +397,7 @@ export class ProjectView
                 if (this.state.showBlocks && this.editor == this.textEditor) this.textEditor.openBlocks();
             }).finally(() => {
                 this.forceUpdate();
+                this.editor.focus();
             })
     }
 
@@ -1586,14 +1587,24 @@ ${compileService && compileService.githubCorePackage && compileService.gittag ? 
                 {useModulator ? <audio id="modulatorAudioOutput" controls></audio> : undefined }
                 {useModulator ? <div id="modulatorWrapper"><div id="modulatorBubble"><canvas id="modulatorWavStrip"></canvas></div></div> : undefined }
                 {hideMenuBar ? undefined :
-                    <div id="menubar" role="banner">
+                    <ul id="nav-access">
+                        {selectLanguage ? <li>
+                            <a href="#" tabIndex={0} onKeyDown={e => sui.handleSpaceEnter(e, this, this.selectLang)} onClick={() => this.selectLang()}>{lf("Select language")}</a>
+                        </li> : undefined }
+                        {!targetTheme.blocksOnly ? <li>
+                            <a href="#" tabIndex={0} onKeyDown={e => sui.handleSpaceEnter(e, this, this.openJavaScript)}  onClick={() => this.openJavaScript()}>{lf("Switch to Javascript")}</a>
+                        </li> : undefined }
+                    </ul>
+                }
+                {hideMenuBar ? undefined :
+                    <nav id="menubar" role="navigation">
                         <div className={`ui borderless fixed ${targetTheme.invertedMenu ? `inverted` : ''} menu`} role="menubar">
                             {!sandbox ? <div className="left menu">
                                 <span id="logo" className="ui item logo">
                                     {targetTheme.logo || targetTheme.portraitLogo
-                                        ? <a className="ui image" target="_blank" href={targetTheme.logoUrl}><img className={`ui logo ${targetTheme.portraitLogo ? " portrait hide" : ''}`} src={Util.toDataUri(targetTheme.logo || targetTheme.portraitLogo) } alt={`${targetTheme.boardName} Logo`}/></a>
+                                        ? <a className="ui image" target="_blank" href={targetTheme.logoUrl} title={lf("Visit the {0} page", targetTheme.boardName)}><img className={`ui logo ${targetTheme.portraitLogo ? " portrait hide" : ''}`} src={Util.toDataUri(targetTheme.logo || targetTheme.portraitLogo) } alt={`${targetTheme.boardName} Logo`}/></a>
                                         : <span className="name">{targetTheme.name}</span>}
-                                    {targetTheme.portraitLogo ? (<a className="ui" target="_blank" href={targetTheme.logoUrl}><img className='ui mini image portrait only' src={Util.toDataUri(targetTheme.portraitLogo) } alt={`${targetTheme.boardName} Logo`}/></a>) : null}
+                                    {targetTheme.portraitLogo ? (<a className="ui" target="_blank" href={targetTheme.logoUrl} title={lf("Visit the {0} page", targetTheme.boardName)}><img className='ui mini image portrait only' src={Util.toDataUri(targetTheme.portraitLogo) } alt={`${targetTheme.boardName} Logo`}/></a>) : null}
                                 </span>
                                 {!inTutorial ? <sui.Item class="openproject" role="menuitem" textClass="landscape only" icon="folder open large" text={lf("Projects") } onClick={() => this.openProject() } /> : null}
                                 {!inTutorial && this.state.header && sharingEnabled ? <sui.Item class="shareproject" role="menuitem" textClass="widedesktop only" text={lf("Share") } icon="share alternate large" onClick={() => this.embed() } /> : null}
@@ -1603,16 +1614,16 @@ ${compileService && compileService.githubCorePackage && compileService.gittag ? 
                                         <img className="ui mini image" src={Util.toDataUri(rightLogo) } onClick={() => this.launchFullEditor() } alt={`${targetTheme.boardName} Logo`}/>
                                     </span>
                                 </div> }
-                            {!inTutorial && !targetTheme.blocksOnly ? <sui.Item class="editor-menuitem">
+                            {!inTutorial && !targetTheme.blocksOnly ? <div className="ui item link editor-menuitem">
                                 {sandbox ? <sui.Item class="sim-menuitem thin portrait only" textClass="landscape only" text={lf("Simulator") } icon={simActive && this.state.running ? "stop" : "play"} active={simActive} onClick={() => this.openSimView() } title={!simActive ? lf("Show Simulator") : runTooltip} /> : undefined }
                                 <sui.Item class="blocks-menuitem" textClass="landscape only" text={lf("Blocks") } icon="xicon blocks" active={blockActive} onClick={() => this.openBlocks() } title={lf("Convert code to Blocks") } />
                                 <sui.Item class="javascript-menuitem" textClass="landscape only" text={lf("JavaScript") } icon="xicon js" active={javascriptActive} onClick={() => this.openJavaScript() } title={lf("Convert code to JavaScript") } />
-                            </sui.Item> : undefined}
+                            </div> : undefined}
                             {inTutorial ? <tutorial.TutorialMenuItem parent={this} /> : undefined}
                             <div className="right menu">
                                 {docMenu ? <container.DocsMenuItem parent={this} /> : undefined}
                                 {sandbox || inTutorial ? undefined :
-                                    <sui.DropdownMenuItem icon='setting large' title={lf("More...") } class="more-dropdown-menuitem">
+                                    <sui.DropdownMenuItem role="menuitem" icon='setting large' title={lf("More...") } class="more-dropdown-menuitem">
                                         {this.state.header ? <sui.Item role="menuitem" icon="options" text={lf("Project Settings") } onClick={() => this.setFile(pkg.mainEditorPkg().lookupFile("this/pxt.json")) } /> : undefined}
                                         {this.state.header && packages ? <sui.Item role="menuitem" icon="disk outline" text={lf("Add Package...") } onClick={() => this.addPackage() } /> : undefined}
                                         {this.state.header ? <sui.Item role="menuitem" icon="trash" text={lf("Delete Project") } onClick={() => this.removeProject() } /> : undefined}
@@ -1638,7 +1649,7 @@ ${compileService && compileService.githubCorePackage && compileService.gittag ? 
 
                                 {inTutorial ? <sui.ButtonMenuItem class="exit-tutorial-btn" role="menuitem" icon="external" text={lf("Exit tutorial") } textClass="landscape only" onClick={() => this.exitTutorial(true) } /> : undefined}
 
-                                {!sandbox ? <a id="organization" href={targetTheme.organizationUrl} target="blank" className="ui item logo" onClick={() => pxt.tickEvent("menu.org") }>
+                                {!sandbox ? <a id="organization" href={targetTheme.organizationUrl} target="blank" className="ui item logo" onClick={() => pxt.tickEvent("menu.org")} title={lf("Visit the {0} page", targetTheme.organization)}>
                                     {targetTheme.organizationWideLogo || targetTheme.organizationLogo
                                         ? <img className={`ui logo ${targetTheme.organizationWideLogo ? " portrait hide" : ''}`} src={Util.toDataUri(targetTheme.organizationWideLogo || targetTheme.organizationLogo) } alt={`${targetTheme.organization} Logo`}/>
                                         : <span className="name">{targetTheme.organization}</span>}
@@ -1647,14 +1658,14 @@ ${compileService && compileService.githubCorePackage && compileService.gittag ? 
                                 {betaUrl ? <a href={`${betaUrl}`} className="ui red mini corner top left attached label betalabel">{lf("Beta")}</a> : undefined }
                             </div>
                         </div>
-                    </div> }
+                    </nav> }
                 {gettingStarted ?
                     <div id="getting-started-btn">
                         <sui.Button class="portrait hide bottom attached small getting-started-btn" title={gettingStartedTooltip} text={lf("Getting Started") } onClick={() => this.gettingStarted() } />
                     </div>
                     : undefined}
                 <div id="simulator">
-                    <div id="filelist" className="ui items" role="complementary">
+                    <div id="filelist" className="ui items" role="complementary" aria-label={lf("Simulator area")}>
                         <div id="boardview" className={`ui vertical editorFloat`}>
                         </div>
                         { !isHeadless ? <div className="ui item grid centered portrait hide simtoolbar">
@@ -1685,7 +1696,7 @@ ${compileService && compileService.githubCorePackage && compileService.gittag ? 
                 </div>
                 {inTutorial ? <tutorial.TutorialHint ref="tutorialhint" parent={this} /> : undefined }
                 {inTutorial ? <tutorial.TutorialContent ref="tutorialcontent" parent={this} /> : undefined }
-                {hideEditorToolbar ? undefined : <div id="editortools" role="complementary">
+                {hideEditorToolbar ? undefined : <div id="editortools" role="complementary" aria-label={lf("Editor toolbar")}>
                     <editortoolbar.EditorToolbar ref="editortools" parent={this} />
                 </div> }
                 {sideDocs ? <container.SideDocs ref="sidedoc" parent={this} /> : undefined}
@@ -1695,7 +1706,7 @@ ${compileService && compileService.githubCorePackage && compileService.gittag ? 
                 {selectLanguage ? <lang.LanguagePicker parent={this} ref={v => this.languagePicker = v} /> : undefined}
                 {inTutorial ? <tutorial.TutorialComplete parent={this} ref={v => this.tutorialComplete = v} /> : undefined }
                 {sandbox ? <div className="ui horizontal small divided link list sandboxfooter">
-                    {targetTheme.organizationUrl && targetTheme.organization ? <a className="item" target="_blank" href={targetTheme.organizationUrl}>{targetTheme.organization}</a> : undefined}
+                    {targetTheme.organizationUrl && targetTheme.organization ? <a className="item" target="_blank" href={targetTheme.organizationUrl} title={lf("Visit the {0} page", targetTheme.organization)}>{targetTheme.organization}</a> : undefined}
                     <a target="_blank" className="item" href={targetTheme.termsOfUseUrl}>{lf("Terms of Use") }</a>
                     <a target="_blank" className="item" href={targetTheme.privacyUrl}>{lf("Privacy") }</a>
                     <span className="item"><a className="ui thin portrait only" title={compileTooltip} onClick={() => this.compile() }><i className={`icon ${pxt.appTarget.appTheme.downloadIcon  || 'download'}`}/>{ pxt.appTarget.appTheme.useUploadMessage ? lf("Upload") : lf("Download") }</a></span>

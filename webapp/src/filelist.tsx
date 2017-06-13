@@ -160,7 +160,7 @@ namespace custom {
         const show = !!this.props.parent.state.showFiles;
         const targetTheme = pxt.appTarget.appTheme;
         const plus = show && !pkg.mainEditorPkg().files[customFile]
-        return <div className={`ui tiny vertical ${targetTheme.invertedMenu ? `inverted` : ''} menu filemenu landscape only`}>
+        return <div className={`ui tiny vertical ${targetTheme.invertedMenu ? `inverted` : ''} menu filemenu landscape only`} aria-label={lf("Explorer")}>
             <div key="projectheader" className="link item" onClick={() => this.toggleVisibility() }>
                 {lf("Explorer") }
                 <i className={`chevron ${show ? "down" : "right"} icon`}></i>

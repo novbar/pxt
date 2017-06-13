@@ -242,11 +242,12 @@ export class EditorToolbar extends data.Component<ISettingsProps, {}> {
                                 {showProjectRename ?
                                     <div className="row" style={compileBtn ? { paddingTop: 0 } : {}}>
                                         <div className="column">
-                                            <div className="ui item large right labeled fluid input projectname-input projectname-tablet" title={lf("Pick a name for your project") }>
+                                            <div className="ui item large right labeled fluid input projectname-input projectname-tablet">
                                                 <input id="fileNameInput"
                                                     type="text"
                                                     placeholder={lf("Pick a name...") }
                                                     value={projectName || ''}
+                                                    title={lf("Pick a name for your project")}
                                                     onChange={(e) => this.saveProjectName((e.target as any).value, 'tablet') }>
                                                 </input>
                                                 <sui.Button icon='save' class="large right attached editortools-btn save-editortools-btn" title={lf("Save") } onClick={() => this.saveFile('tablet') } />
@@ -302,11 +303,12 @@ export class EditorToolbar extends data.Component<ISettingsProps, {}> {
                     </div>
                     {showProjectRename ?
                         <div className="column left aligned">
-                            <div className={`ui right labeled input projectname-input projectname-computer`} title={lf("Pick a name for your project") }>
+                            <div className={`ui right labeled input projectname-input projectname-computer`}>
                                 <input id="fileNameInput"
                                     type="text"
                                     placeholder={lf("Pick a name...") }
                                     value={projectName || ''}
+                                    title={lf("Pick a name for your project")}
                                     onChange={(e) => this.saveProjectName((e.target as any).value, 'computer') }>
                                 </input>
                                 <sui.Button icon='save' class="small right attached editortools-btn save-editortools-btn" title={lf("Save") } onClick={() => this.saveFile('computer') } />

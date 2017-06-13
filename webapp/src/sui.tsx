@@ -35,6 +35,11 @@ function genericClassName(cls: string, props: UiProps, ignoreIcon: boolean = fal
     return `${cls} ${ignoreIcon ? '' : props.icon && props.text ? 'icon-and-text' : props.icon ? 'icon' : ""} ${props.class || ""}`;
 }
 
+export function handleSpaceEnter(e: React.KeyboardEvent, parent: any, onClick: any) {
+    if (e.keyCode == /* SPACE */ 32 || e.keyCode == /* ENTER */ 13)
+        onClick.call(parent);
+}
+
 function genericContent(props: UiProps) {
     return [
         props.icon ? (<i key='iconkey' className={props.icon + " icon " + (props.text ? " icon-and-text " : "") + (props.iconClass ? " " + props.iconClass : '') }></i>) : null,
@@ -91,9 +96,10 @@ export class DropdownMenuItem extends UiElement<DropdownProps> {
         return (
             <div className={genericClassName("ui dropdown item", this.props) }
                 role={this.props.role}
-                title={this.props.title}>
+                title={this.props.title}
+                aria-haspopup="true">
                 {genericContent(this.props) }
-                <div className="menu">
+                <div className="menu" role="menu">
                     {this.props.children}
                 </div>
             </div>);
@@ -103,6 +109,7 @@ export class DropdownMenuItem extends UiElement<DropdownProps> {
 export interface ItemProps extends UiProps {
     active?: boolean;
     value?: string;
+    tabIndex?: number;
     onClick?: () => void;
 }
 
@@ -114,7 +121,9 @@ export class Item extends data.Component<ItemProps, {}> {
                 title={this.props.title || this.props.text}
                 key={this.props.value}
                 data-value={this.props.value}
-                onClick={this.props.onClick}>
+                onKeyDown={e => handleSpaceEnter(e, this, this.props.onClick)}
+                onClick={this.props.onClick}
+                tabIndex={this.props.tabIndex || 0}>
                 {genericContent(this.props) }
                 {this.props.children}
             </div>);
@@ -150,7 +159,6 @@ export class Button extends UiElement<ButtonProps> {
             <button className={genericClassName("ui button", this.props) + " " + (this.props.disabled ? "disabled" : "") }
                 role={this.props.role}
                 title={this.props.title}
-                aria-label={this.props.title || this.props.text}
                 onClick={this.props.onClick}>
                 {genericContent(this.props) }
                 {this.props.children}
@@ -399,6 +407,7 @@ export interface MenuProps {
     tabular?: boolean | 'right';
     text?: boolean;
     vertical?: boolean;
+    role?: string;
 }
 
 export interface MenuItemProps {
@@ -415,6 +424,8 @@ export interface MenuItemProps {
     name?: string;
     onClick?: (event: React.MouseEvent, data: MenuItemProps) => void;
     position?: 'right';
+    role?: string;
+    id?: string;
 }
 
 export class MenuItem extends data.Component<MenuItemProps, {}> {
@@ -441,6 +452,8 @@ export class MenuItem extends data.Component<MenuItemProps, {}> {
             name,
             onClick,
             position,
+            role,
+            id
         } = this.props;
 
         const classes = cx([
@@ -460,10 +473,12 @@ export class MenuItem extends data.Component<MenuItemProps, {}> {
         }
 
         return (
-            <div className={classes} onClick={this.handleClick}>
+            <a id={id} className={classes}
+                onClick={this.handleClick}
+                role={role || 'menuitem'}>
                 {icon ? <i className={`icon ${icon}`} ></i> : undefined}
                 {content || name}
-            </div>
+            </a>
         )
     }
 }
@@ -497,7 +512,8 @@ export class Menu extends data.Component<MenuProps, MenuState> {
             stackable,
             tabular,
             text,
-            vertical
+            vertical,
+            role
         } = this.props;
 
         const classes = cx([
@@ -524,7 +540,8 @@ export class Menu extends data.Component<MenuProps, MenuState> {
         ]);
 
         return (
-            <div className={classes}>
+            <div className={classes}
+                role={role || 'menu'}>
                 {children}
             </div>
         )
@@ -702,7 +719,7 @@ export class Modal extends data.Component<ModalProps, ModalState> {
         const modalJSX = (
             <div className={classes} style={{ marginTop }} ref={this.handleRef} role="dialog" aria-labelledby={this.id + 'title'} aria-describedby={this.id + 'desc'} >
                 {this.props.closeIcon ? <Button
-                        icon={closeIconName}
+                        icon={closeIconName} aria-label="close"
                         class="huge clear right floated"
                         onClick={() => this.handleClose(null) } /> : undefined }
                 {this.props.helpUrl ?

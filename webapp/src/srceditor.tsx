@@ -96,6 +96,7 @@ export class Editor implements pxt.editor.IEditor {
       this.editor != undefined
     *******************************/
 
+    focus() { }
     domUpdate() { }
 
     setDiagnostics(file: pkg.File, snapshot: any): void { }

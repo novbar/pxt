@@ -218,9 +218,9 @@ export class Projects extends data.Component<ISettingsProps, ProjectsState> {
                 onClose={() => this.setState({ visible: false }) } dimmer={true}
                 closeOnDimmerClick closeOnDocumentClick>
                 <sui.Segment inverted={targetTheme.invertedMenu} attached="top">
-                    <sui.Menu inverted={targetTheme.invertedMenu} secondary>
+                    <sui.Menu inverted={targetTheme.invertedMenu} secondary role="tablist">
                         {tabs.map(t =>
-                            <sui.MenuItem key={`tab${t}`} active={tab == t} name={t == MYSTUFF ? lf("My Stuff") : Util.rlf(t)} onClick={() => this.setState({ tab: t }) } />) }
+                            <sui.MenuItem id={`tab${t}`} key={`tab${t}`} active={tab == t} role="tab" aria-selected={tab == t} name={t == MYSTUFF ? lf("My Stuff") : Util.rlf(t)} onClick={() => this.setState({ tab: t }) } />) }
                         <div className="right menu">
                             <sui.Button
                                 icon='close'
@@ -229,7 +229,7 @@ export class Projects extends data.Component<ISettingsProps, ProjectsState> {
                         </div>
                     </sui.Menu>
                 </sui.Segment>
-                {tab == MYSTUFF ? <div className={tabClasses}>
+                {tab == MYSTUFF ? <div className={tabClasses} role="tabpanel" aria-labeledby={`tab${MYSTUFF}`}>
                     <div className="group">
                         <div className="ui cards">
                             <codecard.CodeCardView
@@ -296,7 +296,7 @@ export class Projects extends data.Component<ISettingsProps, ProjectsState> {
                         </div>
                     </div>
                 </div> : undefined }
-                {tab != MYSTUFF ? <div className={tabClasses}>
+                {tab != MYSTUFF ? <div className={tabClasses} role="tabpanel" aria-labeledby={`tab${tab}`}>
                     <div className="ui cards centered">
                         {gals[tab].map(scr => <codecard.CodeCardView
                             key={tab + scr.name}

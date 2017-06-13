@@ -57,6 +57,10 @@ export class Editor extends srceditor.Editor {
     loadingMonaco: boolean;
     showAdvanced: boolean;
 
+    setVisible(v: boolean) {
+        this.isVisible = v;
+    }
+
     hasBlocks() {
         if (!this.currFile) return true
         let blockFile = this.currFile.getVirtualFileName();
@@ -1018,6 +1022,10 @@ export class Editor extends srceditor.Editor {
             }).finally(() => {
                 editorArea.removeChild(loading);
             });
+    }
+
+    focus() {
+        if (this.editor) this.editor.focus();
     }
 
     private beginLoadToolbox(file: pkg.File) {
