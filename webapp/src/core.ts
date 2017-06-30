@@ -269,6 +269,7 @@ export function dialogAsync(options: DialogOptions): Promise<void> {
                     resolve()
                 }
             },
+            onVisible: () => giveFocusFirstInteractiveElement(mo)
         });
         mo.modal("show")
     })
@@ -446,6 +447,49 @@ export function scrollIntoView(item: JQuery, margin = 0) {
     if (newTop != selfTop) {
         parent.scrollTop(newTop)
         //parent.animate({ 'scrollTop': newTop }, 'fast');
+    }
+}
+
+export function giveFocusFirstInteractiveElement(element: JQuery) {
+    let firstTag: HTMLElement
+    let lastTag: HTMLElement
+    let tags = element.find("*")
+
+    let i = 0;
+    while (firstTag == undefined && i < tags.length) {
+        if (tags[i].tabIndex > -1 && !tags[i].hidden && tags[i].style.visibility !== "hidden" && tags[i].style.display !== "none") {
+            firstTag = tags[i]
+        }
+
+        i++
+    }
+
+    i = tags.length - 1;
+    while (lastTag == undefined && i >= 0) {
+        if (tags[i].tabIndex > -1 && !tags[i].hidden && tags[i].style.visibility !== "hidden" && tags[i].style.display !== "none") {
+            lastTag = tags[i]
+        }
+
+        i--
+    }
+
+    if (firstTag !== undefined) {
+        firstTag.focus()
+
+        let giveFocusToFirstTag = (e: KeyboardEvent) => {
+            let charCode = (typeof e.which == "number") ? e.which : e.keyCode
+            if (charCode === 9) {
+                e.preventDefault()
+                firstTag.focus()
+            }
+        }
+
+        if (lastTag !== undefined) {
+            lastTag.onkeydown = giveFocusToFirstTag
+            if (firstTag === lastTag) { // if there is only one interactive element in the scope, we trap the user to force him to validate the message
+                lastTag.onkeyup = giveFocusToFirstTag
+            }
+        }
     }
 }
 

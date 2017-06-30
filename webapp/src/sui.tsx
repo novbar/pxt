@@ -506,11 +506,11 @@ export class MenuItem extends data.Component<MenuItemProps, {}> {
         ]);
 
         if (children) {
-            return <div className={classes} onClick={this.handleClick}>{children}</div>
+            return <div className={classes} onClick={this.handleClick} tabIndex={0} onKeyPress={fireClickOnEnter}>{children}</div>
         }
 
         return (
-            <div className={classes} onClick={this.handleClick}>
+            <div className={classes} onClick={this.handleClick} tabIndex={0} onKeyPress={fireClickOnEnter}>
                 {icon ? <i className={`icon ${icon}`} ></i> : undefined}
                 {content || name}
             </div>
